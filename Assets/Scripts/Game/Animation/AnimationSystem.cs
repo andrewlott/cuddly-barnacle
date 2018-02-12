@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class AnimationSystem : BaseSystem {
 
@@ -13,13 +14,15 @@ public class AnimationSystem : BaseSystem {
 	}
 
 	public override void Update() {
-		List<BaseComponent> animationComponents = Pool.Instance.ComponentsForType(typeof(AnimationComponent));
+		List<BaseComponent> animationComponents = Pool.Instance.ComponentsForType(typeof(AnimationComponent)).ToList();
 		foreach (AnimationComponent ac in animationComponents) {
 			if (ac.CallbackState == null || IsAnimationComponentComplete(ac)) {
 				if (ac.Callback != null) {
 					ac.Callback(ac.gameObject);
 				}
-				GameObject.Destroy(ac);
+				if (ac != null) {
+					GameObject.Destroy(ac);
+				}
 			}
 		}
 	}

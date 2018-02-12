@@ -13,7 +13,9 @@ public class GridComponent : BaseComponent {
 	private static float _yOffset = _tileWidth;
 	private static Vector3 _boardCenter = new Vector3(0.0f, -0.4f, 0.0f);
 
-	private Vector3 _positionOffset = Vector3.zero;
+	// Movement
+	private static float _inverseSpeed = 20.0f * 30.0f; // about 30 frames per sec * 20s, applied to height of tile, so should produce 1 row every 20s
+	private static float _shiftCounter = 0.0f;
 
 	private GameObject[,] _grid = new GameObject[_height, _width];
 
@@ -21,7 +23,7 @@ public class GridComponent : BaseComponent {
 		for (int i = 0; i < _grid.GetLength(0); i++) {
 			for (int j = 0; j < _grid.GetLength(1); j++) {
 				bool shouldColor = i < _bottomBuffer;
-				AddTileForPosition(_grid, i, j, shouldColor);
+				AddTileForPosition(_grid, i, j, shouldColor: shouldColor);
 			}
 		}
 	}
@@ -46,7 +48,7 @@ public class GridComponent : BaseComponent {
 		}
 		// Add new game objects for bottom row
 		for (int i = 0; i < _grid.GetLength(1); i++) {
-			AddTileForPosition(newGrid, 0, i, true);
+			AddTileForPosition(newGrid, 0, i, shouldColor: true);
 		}
 
 		_grid = newGrid;
@@ -63,6 +65,9 @@ public class GridComponent : BaseComponent {
 		}
 		grid[i, j] = g;
 
+		TileComponent tc = g.GetComponent<TileComponent>();
+		tc.ParentGrid = this;
+
 		ColorComponent cc = g.GetComponent<ColorComponent>();
 		cc.shouldRandomize = shouldColor;
 	}
@@ -78,6 +83,9 @@ public class GridComponent : BaseComponent {
 			Vector3 pos = PositionForIndex(_height - _topBuffer, randomCol - i);
 			g.transform.position = pos;
 			g.transform.SetParent(gameObject.transform);
+			TileComponent tc = g.GetComponent<TileComponent>();
+			tc.ParentGrid = this;
+
 			if (_grid[_height - _topBuffer, randomCol - i] != null) {
 				Utils.DestroyEntity(_grid[_height - _topBuffer, randomCol - i]);
 			}
@@ -89,7 +97,7 @@ public class GridComponent : BaseComponent {
 
 	public void ReplaceBlockWithRandomColoredTile(BlockComponent bc) {
 		Vector2Int pos = PositionInGrid(bc.gameObject);
-		AddTileForPosition(_grid, pos.x, pos.y, true, false);
+		AddTileForPosition(_grid, pos.x, pos.y, shouldColor: true, shouldDestroyExisting: false);
 	}
 
 	public static float YOffset() {
@@ -132,7 +140,7 @@ public class GridComponent : BaseComponent {
 		int cols = 0;
 		foreach (Vector2Int p in blockPositions) {
 			Vector2Int pos = new Vector2Int(p.x, p.y);
-			while (pos.x - 1 >= 0 && _grid[pos.x - 1, pos.y] != null) {
+			while (pos.x - 1 >= _bottomBuffer && _grid[pos.x - 1, pos.y] != null) {
 				pos.x -= 1;
 				ColorComponent cc = _grid[pos.x, pos.y].GetComponent<ColorComponent>();
 				SwappingComponent sc = _grid[pos.x, pos.y].GetComponent<SwappingComponent>();
@@ -227,16 +235,25 @@ public class GridComponent : BaseComponent {
 	public Vector3 PositionForIndex(int y, int x) {
 		return _boardCenter + new Vector3((x - _grid.GetLength(1) / 2.0f + 0.5f) * _xOffset, 
 			               (y - _grid.GetLength(0) / 2.0f + 0.5f) * _yOffset, 
-			                0) 
-			+ _positionOffset;
+			                0) +
+			new Vector3(0.0f, _shiftCounter * StepPixelSize(), 0.0f);
+		;
+	}
+		
+	public static long StepSize() {
+		return 2;
 	}
 
-	public void UpdatePositionsOffset(float riseRate) {
-//		_positionOffset += new Vector3(0.0f, riseRate, 0.0f);
+	public static float StepPixelSize() {
+		return GridComponent.YOffset() / _inverseSpeed;
 	}
 
-	public void SetPositionsOffset(Vector3 newOffset) {
-		_positionOffset = newOffset;
+	public void IncrementShiftCounter() {
+		_shiftCounter += StepSize();
+		if (StepSize() > 0 && _shiftCounter >= _inverseSpeed) {
+			_shiftCounter %= (int)_inverseSpeed;
+			this.ShiftRows();
+		}
 	}
 
 	public bool IsHidden(GameObject g) {

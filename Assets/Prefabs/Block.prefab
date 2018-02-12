@@ -24,6 +24,7 @@ GameObject:
   - component: {fileID: 114143622702239280}
   - component: {fileID: 114246727163945852}
   - component: {fileID: 95630260479261228}
+  - component: {fileID: 114402326868243936}
   m_Layer: 0
   m_Name: Block
   m_TagString: Untagged
@@ -84,6 +85,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BlockId: 0
+--- !u!114 &114402326868243936
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1016843293755010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d30adaee482c41a095e6e7539423988, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ParentGrid: {fileID: 0}
 --- !u!114 &114432638074331298
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -129,7 +142,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 414095891
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300200, guid: 626a13b4c594148e5b5f7faaee405f8f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

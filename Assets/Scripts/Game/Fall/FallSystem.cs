@@ -43,6 +43,7 @@ public class FallSystem : BaseSystem {
 				if (cc.color == ColorType.Block && !GC.CanBlockFall(g)) {
 					break;
 				}
+
 				swappableObjectsAbove.Add(g);
 
 				g.AddComponent<FallingComponent>();

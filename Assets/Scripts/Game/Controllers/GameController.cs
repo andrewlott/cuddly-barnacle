@@ -70,6 +70,15 @@ public class GameController : BaseController {
 
 	private void ExtraSetup() {
 		DOTween.useSmoothDeltaTime = true;
+
+		GameObject debug = GameObject.Find("Debug");
+		if (debug != null) {
+			#if UNITY_EDITOR
+			debug.SetActive(true);
+			#else
+//			debug.SetActive(false);
+			#endif
+		}
 	}
 
 	private void FixUI() {
@@ -91,7 +100,9 @@ public class GameController : BaseController {
 
 	public void StartGame() {
 		StartSinglePlayer();
-		return;
+	}
+
+	public void StartMultiplayer() {
 		CharacterComponent chc = gameObject.AddComponent<CharacterComponent>();
 		chc.Character = (CharacterType)Utils.NextRandomColor();
 

@@ -27,8 +27,9 @@ GameObject:
   - component: {fileID: 61655201688025172}
   - component: {fileID: 95612945845721748}
   - component: {fileID: 114057531140907844}
+  - component: {fileID: 114092611087382954}
   m_Layer: 0
-  m_Name: Grid
+  m_Name: Tile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -131,6 +132,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Cursor: {fileID: 1591684459176628}
+--- !u!114 &114092611087382954
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1135274020008528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d30adaee482c41a095e6e7539423988, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ParentGrid: {fileID: 0}
 --- !u!114 &114097303889211136
 MonoBehaviour:
   m_ObjectHideFlags: 1
