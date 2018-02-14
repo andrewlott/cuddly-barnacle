@@ -92,7 +92,14 @@ public class TouchSystem : BaseSystem {
 					_previousTouchComponent = _lastTouchComponent;
 					_lastTouchComponent = null;
 				} else {
-					Swap();
+					if (GC.AreNeighbors(_previousTouchComponent.gameObject, _lastTouchComponent.gameObject)) {
+						Swap();
+					} else {
+						RemoveCursor(_previousTouchComponent);
+						RemoveCursor(_lastTouchComponent);
+						_previousTouchComponent = null;
+						_lastTouchComponent = null;
+					}
 				}
 			} else if (_previousTouchComponent == null) {
 				_previousTouchComponent = _lastTouchComponent;
