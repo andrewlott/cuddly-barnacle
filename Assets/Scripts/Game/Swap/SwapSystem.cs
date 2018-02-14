@@ -27,7 +27,6 @@ public class SwapSystem : BaseSystem {
 			Tweener lastTween = null;
 
 			for (int i = s.Objects.Count - 1; i >= 0; i--) {
-//			for (int i = 0; i < s.swapIndices.Count; i++) {
 				int index = (i - 1 + s.Objects.Count) % s.Objects.Count;
 				GameObject swapFromObject = s.Objects[i];
 				GameObject swapToObject = s.Objects[index];
@@ -60,6 +59,10 @@ public class SwapSystem : BaseSystem {
 				SwappingComponent scc = g.GetComponent<SwappingComponent>();
 				if (scc != null) {
 					GameObject.Destroy(scc);
+				}
+				TileSelectedComponent tsc = g.GetComponent<TileSelectedComponent>();
+				if (tsc != null) {
+					GameObject.Destroy(tsc);
 				}
 			}
 		}

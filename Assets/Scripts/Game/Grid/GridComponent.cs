@@ -57,7 +57,7 @@ public class GridComponent : BaseComponent {
 	public void AddTileForPosition(GameObject [,] grid, int i, int j, bool shouldColor = false, bool shouldDestroyExisting = true) {
 		Vector3 pos = PositionForIndex(i, j);
 		GameController gameController = GameObject.FindObjectOfType<GameController>();
-		GameObject g = Instantiate(gameController.GridPrefab);
+		GameObject g = Instantiate(gameController.TilePrefab);
 		g.transform.position = pos;
 		g.transform.SetParent(gameObject.transform);
 		if (grid[i, j] != null && shouldDestroyExisting) {
@@ -194,6 +194,20 @@ public class GridComponent : BaseComponent {
 		return null;
 	}
 
+	public GameObject NearestNeighbor(GameObject fromG, GameObject toG) {
+		Vector2Int toPos = PositionInGrid(toG);
+		Vector2Int fromPos = PositionInGrid(fromG);
+
+		int diff = toPos.y - fromPos.y;
+		if (diff > 0) {
+			return RightNeighbor(fromG);
+		} else if (diff < 0) {
+			return LeftNeighbor(fromG);
+		} else {
+			return fromG;
+		}
+	}
+
 	public bool AreNeighbors(GameObject g1, GameObject g2) {
 		Vector2Int p1 = PositionInGrid(g1);
 		Vector2Int p2 = PositionInGrid(g2);
@@ -230,6 +244,11 @@ public class GridComponent : BaseComponent {
 
 	public GameObject ObjectAtIndex(Vector2Int pos) {
 		return _grid[pos.x, pos.y];
+	}
+
+	public Vector3 PositionForGameObject(GameObject g) {
+		Vector2Int pos = PositionInGrid(g);
+		return PositionForIndex(pos.x, pos.y);
 	}
 
 	public Vector3 PositionForIndex(int y, int x) {

@@ -34,6 +34,10 @@ public class BaseController : MonoBehaviour {
 		_enabled = false;
 	}
 
+	public void TogglePause() {
+		_enabled = !_enabled;
+	}
+
 	public void AddSystem(BaseSystem s) {
 		s.BaseObject = gameObject;
 		Systems.Add(s);

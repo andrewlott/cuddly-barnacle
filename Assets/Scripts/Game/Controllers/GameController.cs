@@ -7,8 +7,10 @@ using DG.Tweening;
 
 public class GameController : BaseController {
 	public Canvas CanvasObject;
-	public GameObject GridPrefab;
+	public GameObject TilePrefab;
 	public GameObject BlockPrefab;
+	public GameObject CursorPrefab;
+
 	public GameObject BoardBackgroundPrefab;
 	public GameObject CharacterBackgroundPrefab;
 	public GameObject CharacterPrefab;
@@ -26,6 +28,8 @@ public class GameController : BaseController {
 		AddSystem(ans);
 		TouchSystem ts = new TouchSystem();
 		AddSystem(ts);
+		PauseSystem ps = new PauseSystem();
+		AddSystem(ps);
 
 		CharacterSystem chs = new CharacterSystem();
 		AddSystem(chs);
@@ -95,6 +99,7 @@ public class GameController : BaseController {
 
 	public void Restart() {
 		Disable();
+		Systems.Clear();
 		SceneManager.LoadScene("Main");
 	}
 
@@ -113,5 +118,14 @@ public class GameController : BaseController {
 	public void StartSinglePlayer() {
 		CharacterComponent chc = gameObject.AddComponent<CharacterComponent>();
 		chc.Character = (CharacterType)Utils.NextRandomColor();
+	}
+
+	public void Pause() {
+		PauseComponent pc = gameObject.GetComponent<PauseComponent>();
+		if (pc != null) {
+			GameObject.Destroy(pc);
+		} else {
+			gameObject.AddComponent<PauseComponent>();
+		}
 	}
 }

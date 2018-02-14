@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class CursorSystem : BaseSystem {
+	Dictionary<GameObject, GameObject> CursorDictionary = new Dictionary<GameObject, GameObject>();
 
 	public override void Start() {
 		Pool.Instance.AddSystemListener(typeof(TileSelectedComponent), this);
@@ -18,15 +19,18 @@ public class CursorSystem : BaseSystem {
 
 	public override void OnComponentAdded(BaseComponent c) {
 		if (c is TileSelectedComponent) {
-			CursorComponent cc = c.gameObject.GetComponent<CursorComponent>();
-			cc.Cursor.SetActive(true);
+			GameObject g = GameObject.Instantiate((Controller() as GameController).CursorPrefab);
+			g.transform.position = GC.PositionForGameObject(c.gameObject);
+			g.transform.SetParent(GC.gameObject.transform);
+			CursorDictionary.Add(c.gameObject, g);
 		}
 	}
 
 	public override void OnComponentRemoved(BaseComponent c) {
 		if (c is TileSelectedComponent) {
-			CursorComponent cc = c.gameObject.GetComponent<CursorComponent>();
-			cc.Cursor.SetActive(false);
+			GameObject g = CursorDictionary[c.gameObject];
+			CursorDictionary.Remove(c.gameObject);
+			Utils.DestroyEntity(g);
 		}
 	}
 }

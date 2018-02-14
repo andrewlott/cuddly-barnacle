@@ -1,11 +1,10 @@
-﻿/*
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// TODO: If last touch is on a tile that's not touchable anymore, remove it
 
 public class TouchSystem : BaseSystem {
+	private TileTouchComponent _previousTouchComponent;
 	private TileTouchComponent _lastTouchComponent;
 
 	public override void Start() {
@@ -63,9 +62,10 @@ public class TouchSystem : BaseSystem {
 			if (GC.IsHidden(c.gameObject)) {
 				return;
 			}
-			if (_lastTouchComponent == null) {
-				_lastTouchComponent = c as TileTouchComponent;
-			}
+
+			_lastTouchComponent = c as TileTouchComponent;
+			AddCursor(_lastTouchComponent);
+
 			Vector2Int pos = GC.PositionInGrid(c.gameObject);
 			Debug.Log(pos);
 		}
@@ -76,25 +76,58 @@ public class TouchSystem : BaseSystem {
 			if (GC.IsHidden(c.gameObject)) {
 				return;
 			}
-			if (_lastTouchComponent == c) {
-				TileSelectedComponent tsc = c.gameObject.GetComponent<TileSelectedComponent>();
-				if (tsc != null) {
-					GameObject.Destroy(tsc);
-				} else {
-					c.gameObject.AddComponent<TileSelectedComponent>();
-					return;
-				}
-			} else if (_lastTouchComponent != null && GC.AreHorizontalNeighbors(_lastTouchComponent.gameObject, c.gameObject)) {
-				SwapComponent swapComponent = _lastTouchComponent.gameObject.AddComponent<SwapComponent>();
-				swapComponent.Objects.Add(swapComponent.gameObject);
-				swapComponent.Objects.Add(c.gameObject);
 
-				TileSelectedComponent tsc = _lastTouchComponent.GetComponent<TileSelectedComponent>();
-				GameObject.Destroy(tsc);
+			// Touch up on the same tile that you touched down on (first time)
+			// select and queue to previous
+			// Touch up on the same tile that you touched down on (second time) 
+			// deselect and clear previous and current
+
+			// Touch down on a tile and touch up somewhere else
+			if (_previousTouchComponent == c) {
+				RemoveCursor(_previousTouchComponent);
+				_previousTouchComponent = null;
+				_lastTouchComponent = null;
+			} else if (_lastTouchComponent == c) {
+				if (_previousTouchComponent == null) {
+					_previousTouchComponent = _lastTouchComponent;
+					_lastTouchComponent = null;
+				} else {
+					Swap();
+				}
+			} else if (_previousTouchComponent == null) {
+				_previousTouchComponent = _lastTouchComponent;
+				_lastTouchComponent = GC.NearestNeighbor(_previousTouchComponent.gameObject, c.gameObject).GetComponent<TileTouchComponent>();
+
+				AddCursor(_lastTouchComponent);
+				Swap();
+
+			} else {
+				_previousTouchComponent = null;
+				_lastTouchComponent = null;
 			}
 		}
+	}
 
+	private void Swap() {
+		SwapComponent swapComponent = _previousTouchComponent.gameObject.AddComponent<SwapComponent>();
+		swapComponent.Objects.Add(swapComponent.gameObject);
+		swapComponent.Objects.Add(_lastTouchComponent.gameObject);
+
+		_previousTouchComponent = null;
 		_lastTouchComponent = null;
 	}
+
+	private void AddCursor(TileTouchComponent ttc) {
+		TileSelectedComponent tsc = ttc.gameObject.GetComponent<TileSelectedComponent>();
+		if (tsc == null) {
+			tsc = ttc.gameObject.AddComponent<TileSelectedComponent>();
+		}
+	}
+
+	private void RemoveCursor(TileTouchComponent ttc) {
+		TileSelectedComponent tsc = ttc.gameObject.GetComponent<TileSelectedComponent>();
+		if (tsc != null) {
+			GameObject.Destroy(tsc);
+		}
+	}
 }
-*/

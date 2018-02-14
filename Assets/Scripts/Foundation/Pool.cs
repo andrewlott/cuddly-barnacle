@@ -63,7 +63,7 @@ public class Pool {
 			systems.Remove(s);
 		}
 	}
-
+		
 	public void AddComponent(BaseComponent c) {
 		if (c != null) {
 			List<BaseComponent> components = ComponentsLike(c);
