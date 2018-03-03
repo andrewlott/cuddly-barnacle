@@ -15,11 +15,14 @@ public class GridComponent : BaseComponent {
 
 	// Movement
 	private static float _inverseSpeed = 20.0f * 30.0f; // about 30 frames per sec * 20s, applied to height of tile, so should produce 1 row every 20s
-	private static float _shiftCounter = 0.0f;
+	private float _shiftCounter = 0.0f;
+	public Vector3 InitialPosition;
 
 	private GameObject[,] _grid = new GameObject[_height, _width];
 
 	public override void ComponentStart() {
+		InitialPosition = this.gameObject.transform.position;
+
 		for (int i = 0; i < _grid.GetLength(0); i++) {
 			for (int j = 0; j < _grid.GetLength(1); j++) {
 				bool shouldColor = i < _bottomBuffer;
@@ -252,7 +255,7 @@ public class GridComponent : BaseComponent {
 	}
 
 	public Vector3 PositionForIndex(int y, int x) {
-		return _boardCenter + new Vector3((x - _grid.GetLength(1) / 2.0f + 0.5f) * _xOffset, 
+		return InitialPosition + _boardCenter + new Vector3((x - _grid.GetLength(1) / 2.0f + 0.5f) * _xOffset, 
 			               (y - _grid.GetLength(0) / 2.0f + 0.5f) * _yOffset, 
 			                0) +
 			new Vector3(0.0f, _shiftCounter * StepPixelSize(), 0.0f);

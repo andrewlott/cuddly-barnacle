@@ -34,7 +34,8 @@ public class HealthSystem : BaseSystem {
 	}
 
 	private float PlayersHealth() {
-		int activeHeight = GC.ActiveHeight();
+		GridComponent gc = Pool.Instance.ComponentForType(typeof(GridComponent)) as GridComponent;
+		int activeHeight = gc.ActiveHeight();
 		return 1.0f - (activeHeight * 1.0f / (GridComponent.GridActiveHeight() + 1));
 	}
 

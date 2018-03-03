@@ -20,8 +20,10 @@ public class CursorSystem : BaseSystem {
 	public override void OnComponentAdded(BaseComponent c) {
 		if (c is TileSelectedComponent) {
 			GameObject g = GameObject.Instantiate((Controller() as GameController).CursorPrefab);
-			g.transform.position = GC.PositionForGameObject(c.gameObject);
-			g.transform.SetParent(GC.gameObject.transform);
+			TileComponent tc = c.gameObject.GetComponent<TileComponent>();
+			GridComponent gc = tc.ParentGrid;
+			g.transform.position = gc.PositionForGameObject(c.gameObject);
+			g.transform.SetParent(gc.gameObject.transform);
 			CursorDictionary.Add(c.gameObject, g);
 		}
 	}

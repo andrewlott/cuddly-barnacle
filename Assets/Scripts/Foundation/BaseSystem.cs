@@ -29,14 +29,4 @@ public class BaseSystem {
 	protected BaseController Controller() {
 		return BaseObject.GetComponent<BaseController>();
 	}
-
-	protected GridComponent GC {
-		get {
-			if (_GC == null) {
-				_GC = Pool.Instance.ComponentForType(typeof(GridComponent)) as GridComponent;
-			}
-
-			return _GC;
-		}
-	}
 }

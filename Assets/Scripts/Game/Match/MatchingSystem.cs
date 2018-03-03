@@ -15,7 +15,9 @@ public class MatchingSystem : BaseSystem {
 	public override void Update() {
 		List<BaseComponent> matchableComponents = Pool.Instance.ComponentsForType(typeof(MatchableComponent));
 		foreach (MatchableComponent mc in matchableComponents) {
-			if (GC.IsHidden(mc.gameObject)) {
+			TileComponent tc = mc.gameObject.GetComponent<TileComponent>();
+			GridComponent gc = tc.ParentGrid;
+			if (gc.IsHidden(mc.gameObject)) {
 				continue;
 			}
 
@@ -23,7 +25,7 @@ public class MatchingSystem : BaseSystem {
 				continue;
 			}
 
-			List<MatchableComponent> matchList = FindMatch(mc, GC);
+			List<MatchableComponent> matchList = FindMatch(mc, gc);
 			if (matchList.Count == 0) {
 				continue;
 			}

@@ -22,15 +22,18 @@ using UnityEngine;
 			List<BaseComponent> blockComponents = Pool.Instance.ComponentsForType(typeof(BlockComponent));
 			List<int> matchedBlockIds = new List<int>();
 
+			GridComponent gc = null;
 			foreach (GameObject matchedObject in mc.matchedObjects) {
+				TileComponent tc = matchedObject.GetComponent<TileComponent>();
+				gc = tc.ParentGrid;
 				foreach (BlockComponent bc in blockComponents) {
-					if (GC.AreNeighbors(matchedObject, bc.gameObject) && !matchedBlockIds.Contains(bc.BlockId)) {
+					if (gc.AreNeighbors(matchedObject, bc.gameObject) && !matchedBlockIds.Contains(bc.BlockId)) {
 						matchedBlockIds.Add(bc.BlockId);
 					}
 				}
 			}
 
-			MatchBlocks(matchedBlockIds, GC);
+			MatchBlocks(matchedBlockIds, gc:gc);
 		}
 	}
 

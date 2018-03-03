@@ -17,8 +17,10 @@ public class ColorSystem : BaseSystem {
 		foreach (ColorComponent cc in colorComponents) {
 			SpriteRenderer sr = cc.gameObject.GetComponent<SpriteRenderer>();
 
+			TileComponent tc = cc.gameObject.GetComponent<TileComponent>();
+			GridComponent gc = tc.ParentGrid;
 
-			if (cc.color != ColorType.None && GC.IsHidden(cc.gameObject)) {
+			if (cc.color != ColorType.None && gc.IsHidden(cc.gameObject)) {
 				sr.color = Color.grey;
 			} else {
 				sr.color = Color.white;

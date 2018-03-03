@@ -59,21 +59,26 @@ public class TouchSystem : BaseSystem {
 
 	private void OnTouchDownForComponent(BaseComponent c) {
 		if (c is TileTouchComponent) {
-			if (GC.IsHidden(c.gameObject)) {
+			TileComponent tc = c.gameObject.GetComponent<TileComponent>();
+			GridComponent gc = tc.ParentGrid;
+			if (gc.IsHidden(c.gameObject)) {
 				return;
 			}
 
 			_lastTouchComponent = c as TileTouchComponent;
 			AddCursor(_lastTouchComponent);
 
-			Vector2Int pos = GC.PositionInGrid(c.gameObject);
+			Vector2Int pos = gc.PositionInGrid(c.gameObject);
 			Debug.Log(pos);
 		}
 	}
 		
 	private void OnTouchUpForComponent(BaseComponent c) {
 		if (c is TileTouchComponent) {
-			if (GC.IsHidden(c.gameObject)) {
+			TileComponent tc = c.gameObject.GetComponent<TileComponent>();
+			GridComponent gc = tc.ParentGrid;
+
+			if (gc.IsHidden(c.gameObject)) {
 				return;
 			}
 
@@ -92,7 +97,7 @@ public class TouchSystem : BaseSystem {
 					_previousTouchComponent = _lastTouchComponent;
 					_lastTouchComponent = null;
 				} else {
-					if (GC.AreNeighbors(_previousTouchComponent.gameObject, _lastTouchComponent.gameObject)) {
+					if (gc.AreNeighbors(_previousTouchComponent.gameObject, _lastTouchComponent.gameObject)) {
 						Swap();
 					} else {
 						RemoveCursor(_previousTouchComponent);
@@ -103,7 +108,7 @@ public class TouchSystem : BaseSystem {
 				}
 			} else if (_previousTouchComponent == null) {
 				_previousTouchComponent = _lastTouchComponent;
-				_lastTouchComponent = GC.NearestNeighbor(_previousTouchComponent.gameObject, c.gameObject).GetComponent<TileTouchComponent>();
+				_lastTouchComponent = gc.NearestNeighbor(_previousTouchComponent.gameObject, c.gameObject).GetComponent<TileTouchComponent>();
 
 				AddCursor(_lastTouchComponent);
 				Swap();

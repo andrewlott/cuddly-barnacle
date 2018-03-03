@@ -24,6 +24,9 @@ public class SwapSystem : BaseSystem {
 				continue;
 			}
 
+			TileComponent tc = s.gameObject.GetComponent<TileComponent>();
+			GridComponent gc = tc.ParentGrid;
+
 			Tweener lastTween = null;
 
 			for (int i = s.Objects.Count - 1; i >= 0; i--) {
@@ -32,7 +35,7 @@ public class SwapSystem : BaseSystem {
 				GameObject swapToObject = s.Objects[index];
 				lastTween = swapFromObject.transform.DOLocalMove(swapToObject.transform.localPosition, SwapDuration).SetEase(Ease.Linear);
 				if (i < s.Objects.Count - 1) {
-					GC.Swap(swapFromObject, s.Objects[i + 1]);
+					gc.Swap(swapFromObject, s.Objects[i + 1]);
 				}
 			}
 			s.Swapped = true;

@@ -24,7 +24,9 @@ public class FallSystem : BaseSystem {
 			if (fcc.color != ColorType.None) {
 				continue;
 			}
-			List<GameObject> objectsAbove = GC.AllObjectsAbove(c.gameObject);
+			TileComponent tc = c.gameObject.GetComponent<TileComponent>();
+			GridComponent gc = tc.ParentGrid;
+			List<GameObject> objectsAbove = gc.AllObjectsAbove(c.gameObject);
 			if (objectsAbove.Count == 0) {
 				continue;
 			}
@@ -40,7 +42,7 @@ public class FallSystem : BaseSystem {
 				if (cc.color == ColorType.None || scc != null) {
 					break;
 				}
-				if (cc.color == ColorType.Block && !GC.CanBlockFall(g)) {
+				if (cc.color == ColorType.Block && !gc.CanBlockFall(g)) {
 					break;
 				}
 
